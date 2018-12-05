@@ -1,0 +1,35 @@
+{
+  "name": "sprite-extend-dagre",
+  "version": "0.1.0",
+  "description": "SpriteJS Renderer for Dagre.",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "babel src -d lib && webpack --env.production",
+    "start": "webpack-dev-server --watch-poll",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "akira-cn",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^7.1.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-decorators-runtime": "^0.4.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^5.9.0",
+    "eslint-config-sprite": "^1.0.6",
+    "eslint-plugin-html": "^5.0.0",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-dev-server": "^3.1.10"
+  },
+  "dependencies": {
+    "babel-decorators-runtime": "^0.2.0",
+    "babel-runtime": "^6.26.0",
+    "dagre": "^0.8.2",
+    "roughjs": "^2.2.5"
+  }
+}
