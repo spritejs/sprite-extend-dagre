@@ -28,6 +28,30 @@ export default function install({__spritejs, use, utils, registerNodeType}) {
   class DagreNode extends BaseNode {
     static Attr = DagreNodeAttr;
 
+    get label() {
+      return this.attr('label');
+    }
+
+    set label(val) {
+      return this.attr('label', val);
+    }
+
+    get labelSize() {
+      const label = this.attr('label');
+      if(!label) return [0, 0];
+      const font = this.attr('font');
+      let width = 0;
+      const context = this.context;
+      if(context) {
+        context.save();
+        context.font = font;
+        width = this.context.measureText(label).width;
+        context.restore();
+      }
+      const {size} = utils.parseFont(font);
+      return [width + 12, size + 12];
+    }
+
     @flow
     get contentSize() {
       let [width, height] = this.attrSize;

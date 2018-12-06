@@ -16,7 +16,7 @@ function parseStringPoints(points) {
   return points;
 }
 
-export default function install({__spritejs, use, utils, math, registerNodeType}) {
+export default function install({__spritejs, use, utils, math, registerNodeType, Effects}) {
   const {DagrePath} = use(DagrePathPlugin);
   const BaseEdge = __spritejs.RoughPolyline ? __spritejs.RoughPolyline : DagrePath;
   const {attr, parseValue, inherit} = utils;
@@ -29,6 +29,10 @@ export default function install({__spritejs, use, utils, math, registerNodeType}
         tolerance: 6,
         arrowSize: 'inherit',
         connection: '',
+        points: [[0, 0], [0, 0], [0, 0]],
+        d: 'M0,0L0,0L0,0',
+        labelPos: 'inherit',
+        labelOffset: 'inherit',
       });
     }
 
@@ -60,6 +64,7 @@ export default function install({__spritejs, use, utils, math, registerNodeType}
       if(this.closed) {
         d += 'z';
       }
+      // this.d = 'M0,0L0,0L0,0';
       this.d = d;
       this.set('points', val);
     }
@@ -71,22 +76,32 @@ export default function install({__spritejs, use, utils, math, registerNodeType}
       this.set('arrowSize', val);
     }
 
-    get labelX() {
-      const x = this.get('labelX');
-      if(x === '') {
-        const points = this.get('points');
-        return points[1][0];
-      }
-      return x;
+    @attr
+    @inherit('center')
+    set labelPos(val) {
+      if(this.subject.hasLayout) this.subject.parent.clearLayout();
+      this.set('labelPos', val);
     }
 
-    get labelY() {
-      const y = this.get('labelY');
-      if(y === '') {
-        const points = this.get('points');
-        return points[1][1];
+    @parseValue(parseInt)
+    @attr
+    @inherit(10)
+    set labelOffset(val) {
+      if(this.subject.hasLayout) this.subject.parent.clearLayout();
+      this.set('labelOffset', val);
+    }
+
+    get labelBg() {
+      if(this.label.trim() === '') {
+        return 'rgba(0, 0, 0, 0)';
       }
-      return y;
+      return super.labelBg;
+    }
+
+    @attr
+    set label(val) {
+      if(this.subject.hasLayout) this.subject.parent.clearLayout();
+      super.label = val;
     }
   }
 
@@ -113,6 +128,30 @@ export default function install({__spritejs, use, utils, math, registerNodeType}
         this.context.restore();
       }
       return [];
+    }
+
+    get label() {
+      return this.attr('label');
+    }
+
+    set label(val) {
+      return this.attr('label', val);
+    }
+
+    get labelSize() {
+      const label = this.attr('label');
+      if(!label) return [0, 0];
+      const font = this.attr('font');
+      let width = 0;
+      const context = this.context;
+      if(context) {
+        context.save();
+        context.font = font;
+        width = this.context.measureText(label).width;
+        context.restore();
+      }
+      const {size} = utils.parseFont(font);
+      return [width + 12, size + 12];
     }
 
     render(t, context) {
@@ -142,7 +181,7 @@ export default function install({__spritejs, use, utils, math, registerNodeType}
           const line = points.slice(-2);
           const vector = [line[0][0] - line[1][0], line[0][1] - line[1][1]];
           const m = new Matrix();
-          const len = Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
+          const len = Math.max(0.001, Math.sqrt(vector[0] ** 2 + vector[1] ** 2));
           const scale = arrowSize / len;
           const pv1 = m.rotate(30).scale(scale, scale).transformVector(...vector);
           const pv2 = m.unit().rotate(-30).scale(scale, scale).transformVector(...vector);
@@ -161,8 +200,9 @@ export default function install({__spritejs, use, utils, math, registerNodeType}
           const line = points.slice(-2);
           const vector = [line[0][0] - line[1][0], line[0][1] - line[1][1]];
           const m = new Matrix();
-          const scale = arrowSize / Math.sqrt(vector[0] ** 2 + vector[1] ** 2);
-          const pv1 = m.rotate(30).scale(scale, scale).transformVector(...vector);
+          const len = Math.max(0.001, Math.sqrt(vector[0] ** 2 + vector[1] ** 2));
+          const scale = arrowSize / len;
+          const pv1 = m.unit().rotate(30).scale(scale, scale).transformVector(...vector);
           const pv2 = m.unit().rotate(-30).scale(scale, scale).transformVector(...vector);
           const [x, y] = line[1];
           const d = `M${x},${y}L${x + pv1[0]},${y + pv1[1]}M${x},${y}L${x + pv2[0]},${y + pv2[1]}`;
@@ -179,6 +219,21 @@ export default function install({__spritejs, use, utils, math, registerNodeType}
       return ret;
     }
   }
+
+  const effect = Effects.arrayEffect;
+
+  DagreEdge.setAttributeEffects({
+    points(path1, path2, p, start, end) {
+      const len = Math.max(path1.length, path2.length);
+      const ret = [];
+      for(let i = 0; i < len; i++) {
+        const p1 = path1[Math.min(i, path1.length - 1)],
+          p2 = path2[Math.min(i, path2.length - 1)];
+        ret.push(effect(p1, p2, p, start, end));
+      }
+      return ret.slice(0, path2.length);
+    },
+  });
 
   registerNodeType('dagreEdge', DagreEdge);
 
