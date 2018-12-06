@@ -1,8 +1,7 @@
 import EdgePlugin from './edge';
-import NodePlugin from './node';
 
-function parseNodes(str) {
-  const nodes = str.split(',').map(v => v.trim());
+function parseNodes(nodes) {
+  if(typeof nodes === 'string') nodes = nodes.split('\n').map(v => v.trim());
   const rules = [];
 
   nodes.forEach((node) => {
@@ -14,17 +13,17 @@ function parseNodes(str) {
       if(nodeData.indexOf('!') === 0) {
         nodeRule.type = nodeData.slice(1);
         nodeRule.userNode = true;
-      } else if(/^\[\(.+\)\]$/.test(nodeData)) {
-        nodeRule.type = 'roundedrect';
+      } else if(/^\(\(.+\)\)$/.test(nodeData)) {
+        nodeRule.type = 'ellispe';
         nodeRule.label = nodeData.slice(2, -2);
+      } else if(/^\(.+\)$/.test(nodeData)) {
+        nodeRule.type = 'roundedrect';
+        nodeRule.label = nodeData.slice(1, -1);
       } else if(/^\[.+\]$/.test(nodeData)) {
         nodeRule.type = 'rectangle';
         nodeRule.label = nodeData.slice(1, -1);
       } else if(/^<.+>$/.test(nodeData)) {
         nodeRule.type = 'rhombus';
-        nodeRule.label = nodeData.slice(1, -1);
-      } else if(/^\(.+\)$/.test(nodeData)) {
-        nodeRule.type = 'ellispe';
         nodeRule.label = nodeData.slice(1, -1);
       } else if(/^\/.+\/$/.test(nodeData)) {
         nodeRule.type = 'parallel';
@@ -38,12 +37,12 @@ function parseNodes(str) {
   return rules;
 }
 
-function parseEdges(val) {
-  const edges = val.split(',').map(v => v.trim());
+function parseEdges(edges) {
+  if(typeof edges === 'string') edges = edges.split('\n').map(v => v.trim());
   const rules = [];
   edges.forEach((edge) => {
     const edgeRule = {arrow: false, lineStyle: 'solid'};
-    const jointExp = /^(\S+)(--|~~|->|~>)(\S+)?/;
+    const jointExp = /^([^\s~\->]+)(--|~~|->|~>)([^\s~\->]+)?/;
     let matched = edge.match(jointExp);
     if(matched) {
       edgeRule.connection = [matched[1], matched[3]];
@@ -80,10 +79,9 @@ function parseEdges(val) {
   return rules;
 }
 
-export default function install({use, utils, registerNodeType, Group, BaseSprite}) {
+export default function install({use, utils, registerNodeType, Group, BaseSprite, createNode}) {
   const {attr, parseValue, parseColorString} = utils;
   const {DagreEdge} = use(EdgePlugin);
-  const {DagreNode} = use(NodePlugin);
 
   class DagreAttr extends Group.Attr {
     constructor(subject) {
@@ -255,6 +253,14 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
     },
   };
 
+  function setGraphAttr(g, v) {
+    if(v === 'TB' || v === 'BT' || v === 'LR' || v === 'RL') {
+      g.attr('rankdir', v);
+    } else if(v === 'UL' || v === 'UR' || v === 'DL' || v === 'DR') {
+      g.attr('align', v);
+    }
+  }
+
   class Dagre extends Group {
     static Attr = DagreAttr;
 
@@ -275,7 +281,32 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
       }
     }
 
-    setNodes(str, userNodes) {
+    updateGraph(code, userNodes) {
+      this[_init] = false;
+      this.clear();
+      const lines = code.split('\n').map(v => v.trim());
+      const edges = [];
+      const nodes = [];
+      lines.forEach((line) => {
+        const jointExp = /^([^\s~\->]+)(--|~~|->|~>)([^\s~\->]+)?/;
+        if(jointExp.test(line)) {
+          edges.push(line);
+        } else if(line.indexOf(';') === 0) {
+          /* command */
+        } else if(line.indexOf('graph ') === 0) {
+          /* graph config */
+          const c = line.split(/\s+/g);
+          setGraphAttr(this, c[1]);
+          setGraphAttr(this, c[2]);
+        } else {
+          nodes.push(line);
+        }
+      });
+      this.addNodes(nodes, userNodes);
+      this.addEdges(edges);
+    }
+
+    addNodes(str, userNodes) {
       const nodes = parseNodes(str);
       if(nodes) {
         nodes.forEach((node) => {
@@ -283,7 +314,7 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
           if(node.userNode) {
             el = userNodes[node.type](node);
           } else {
-            el = new DagreNode({
+            el = createNode(`dagre${node.type}`, {
               id: node.id,
               shape: node.type,
               label: node.label,
@@ -297,7 +328,7 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
     }
 
     // {connection, arrow, lineStyle, labelText, labelColor, fontSize}
-    setEdges(str) {
+    addEdges(str) {
       const edges = parseEdges(str);
       if(edges) {
         edges.forEach((edge) => {

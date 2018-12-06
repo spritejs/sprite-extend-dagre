@@ -66,20 +66,19 @@ scene.on('resolutionChange', _.debounce((evt) => {
   dagreGroup.attr({pos: fglayer.center});
 }, 300));
 
-/*
-  id:!start
-  id:[rectangle]
-  id:[(rounded)]
-  id:(ellispe)
-  id:<rhombus>
-  id:/parallel/
- */
-dagreGroup.setNodes(`
-  start:!start,
-  update:[更新设置],
-  decision:<是否缓存？>,
-  fresh:/更新缓存/,
-  finished:[(结束)],
+dagreGroup.updateGraph(`
+graph TB
+  ; 注释
+  start:!start
+  update:[更新设置]
+  decision:<是否缓存？>
+  fresh:/更新缓存/
+  finished:(结束)
+  start->update 开始 red
+  update~~decision
+  decision~>fresh 是
+  decision->finished 否
+  fresh->finished
 `, {
   start() {
     return new RoughCircle({
@@ -89,10 +88,33 @@ dagreGroup.setNodes(`
   },
 });
 
-dagreGroup.setEdges(`
-  start->update 开始 red,
-  update~~decision,
-  decision~>fresh 是,
-  decision->finished 否,
-  fresh->finished,
-`);
+/*
+  id:!start
+  id:[rectangle]
+  id:[(rounded)]
+  id:(ellispe)
+  id:<rhombus>
+  id:/parallel/
+ */
+// dagreGroup.addNodes(`
+//   start:!start
+//   update:[更新设置]
+//   decision:<是否缓存？>
+//   fresh:/更新缓存/
+//   finished:(结束)
+// `, {
+//   start() {
+//     return new RoughCircle({
+//       id: 'start',
+//       radius: 20,
+//     });
+//   },
+// });
+
+// dagreGroup.addEdges(`
+//   start->update 开始 red
+//   update~~decision
+//   decision~>fresh 是
+//   decision->finished 否
+//   fresh->finished
+// `);
