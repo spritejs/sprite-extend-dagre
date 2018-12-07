@@ -7,37 +7,232 @@ spritejs.use(spriteDagre);
 var _spritejs = spritejs,
     Scene = _spritejs.Scene,
     Dagre = _spritejs.Dagre,
-    RoughCircle = _spritejs.RoughCircle;
+    RoughCircle = _spritejs.RoughCircle,
+    Group = _spritejs.Group,
+    Label = _spritejs.Label,
+    DagreRectangle = _spritejs.DagreRectangle,
+    DagreRoundedrect = _spritejs.DagreRoundedrect,
+    DagreEllispe = _spritejs.DagreEllispe,
+    DagreRhombus = _spritejs.DagreRhombus,
+    DagreParallel = _spritejs.DagreParallel;
+
 
 var scene = new Scene('#container', {
   viewport: 'auto',
-  resolution: 'flex'
+  resolution: 'flex',
+  useDocumentCSS: true
 });
 
 var fglayer = scene.layer('fglayer');
 
+var trash = new Label('🗑');
+trash.attr({
+  anchor: 0.5,
+  fontSize: 150,
+  x: '90%',
+  y: 180
+});
+fglayer.append(trash);
+
+trash.on('mouseenter', function (evt) {
+  trash.attr('scale', 1.2);
+});
+
+trash.on('mouseleave', function (evt) {
+  trash.attr('scale', 1.0);
+});
+
+var controlGroup = new Group({
+  width: 400,
+  height: '100%',
+  bgcolor: '#eee',
+  zIndex: 1000,
+  font: '32px "Hannotate SC"',
+  lineWidth: 5
+});
+fglayer.append(controlGroup);
+
+controlGroup.on('click', function (evt) {
+  evt.stopDispatch();
+});
+
+var text = new Label('拖拽添加节点');
+text.attr({
+  anchor: 0.5,
+  pos: [200, 50]
+});
+controlGroup.append(text);
+
+var targetNode = void 0;
+
+var step = new DagreRectangle({
+  anchor: 0.5,
+  pos: [200, 200],
+  label: '执行步骤'
+});
+controlGroup.append(step);
+
+var desicion = new DagreRhombus({
+  anchor: 0.5,
+  pos: [200, 400],
+  label: '判断分支'
+});
+controlGroup.append(desicion);
+
+var operation = new DagreParallel({
+  anchor: 0.5,
+  pos: [200, 600],
+  label: '输入输出'
+});
+controlGroup.append(operation);
+
+var state = new DagreRoundedrect({
+  anchor: 0.5,
+  pos: [200, 800],
+  label: '系统状态'
+});
+controlGroup.append(state);
+
+var state2 = new DagreEllispe({
+  anchor: 0.5,
+  pos: [200, 1000],
+  label: '内部状态'
+});
+controlGroup.append(state2);
+
 var dagreGroup = new Dagre({
   anchor: 0.5,
   pos: fglayer.center,
+  translate: [200, 0],
   lineWidth: 5,
-  align: 'DR',
-  // labelBg: 'blue',
-  // bgcolor: 'grey',
-  // border: [1, 'red'],
   transition: 0.3
 });
 fglayer.append(dagreGroup);
 
+controlGroup.children.forEach(function (s) {
+  s.on('mousedown', function (evt) {
+    var node = evt.target;
+    node.on('mousemove', function (evt) {
+      node.off('mousemove');
+      var c = node.cloneNode();
+      c.attr({
+        pos: [evt.layerX, evt.layerY],
+        lineWidth: 5,
+        strokeColor: 'black',
+        opacity: 0.3,
+        zIndex: 9999,
+        id: Math.random().toString(36).slice(2)
+      });
+      fglayer.append(c);
+      c.setMouseCapture();
+      c.on('mousemove', function (evt) {
+        c.attr({
+          pos: [evt.layerX, evt.layerY]
+        });
+      });
+      c.on('mouseup', function (evt) {
+        c.releaseMouseCapture();
+        if (targetNode && targetNode.nodeType !== 'dagreedge') {
+          c.attr('opacity', 1.0);
+          c.off('mouseup');
+          dagreGroup.appendChild(c);
+          dagreGroup.addEdges(targetNode.id + '->' + c.id);
+        } else {
+          c.remove();
+        }
+      });
+    });
+  });
+});
+
+function removeNode(targetNode) {
+  if (targetNode.id === 'start') {
+    dagreGroup.updateGraph('start:((S))');
+  } else {
+    if (targetNode.nodeType !== 'dagreedge') {
+      var edges = dagreGroup.graph.nodeEdges(targetNode.id);
+      edges.forEach(function (edge) {
+        var edgeNode = dagreGroup.getEdge(edge.v, edge.w);
+        if (edgeNode) edgeNode.remove();
+      });
+    }
+    targetNode.remove();
+  }
+}
+
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === 8 && targetNode) {
+    removeNode(targetNode);
+  }
+});
+
 dagreGroup.on('appendChild', function (_ref) {
   var child = _ref.child;
 
-  child.on('mouseenter', function (evt) {
-    child.attr({ strokeColor: 'green' });
+  child.on('mousedown', function (evt) {
+    if (child.nodeType === 'dagreedge') return;
+    child.on('mousemove', function (evt) {
+      child.off('mousemove');
+      var c = child.cloneNode();
+      c.attr({
+        pos: [evt.layerX, evt.layerY],
+        lineWidth: 5,
+        strokeColor: 'black',
+        opacity: 0.3
+      });
+      fglayer.append(c);
+      c.setMouseCapture();
+      c.on('mousemove', function (evt) {
+        c.attr({
+          pos: [evt.layerX, evt.layerY]
+        });
+      });
+      c.on('mouseup', function (evt) {
+        if (targetNode && child !== targetNode && targetNode.nodeType !== 'dagreedge') {
+          if (!dagreGroup.getEdge(targetNode.id, child.id)) {
+            dagreGroup.addEdges(targetNode.id + '->' + child.id);
+          }
+        }
+        if (trash.attr('scale')[0] === 1.2) {
+          removeNode(child);
+        }
+        c.releaseMouseCapture();
+        c.remove();
+      });
+    });
   });
-  child.on('mouseleave', function (evt) {
-    child.attr({ strokeColor: 'inherit' });
+  child.on('mouseup', function (evt) {
+    if (child.nodeType !== 'dagreedge') {
+      child.releaseMouseCapture();
+      child.off('mousemove');
+    }
   });
   child.on('click', function (evt) {
+    if (child.nodeType === 'dagreedge') {
+      var arrowSize = child.attr('arrowSize');
+      if (arrowSize) {
+        child.attr('arrowSize', 0);
+      } else {
+        child.attr('arrowSize', 24);
+        var lineDash = child.attr('lineDash');
+        if (!lineDash.length) {
+          var lineWidth = child.attr('lineWidth');
+          child.attr({ lineDash: [Math.max(5, 2 * lineWidth), Math.max(10, 3 * lineWidth)] });
+        } else {
+          child.attr({ lineDash: [] });
+        }
+      }
+    }
+  });
+  child.on('mouseenter', function (evt) {
+    targetNode = child;
+    child.attr({ strokeColor: 'orange' });
+  });
+  child.on('mouseleave', function (evt) {
+    targetNode = null;
+    child.attr({ strokeColor: null });
+  });
+  child.on('dblclick', function (evt) {
     var label = child.attr('label');
 
     var _child$attr = child.attr('labelXY'),
@@ -99,6 +294,18 @@ scene.on('resolutionChange', _.debounce(function (evt) {
   dagreGroup.attr({ pos: fglayer.center });
 }, 300));
 
+scene.delegateEvent('mousewheel');
+
+var groupScale = 1.0;
+fglayer.on('mousewheel', function (evt) {
+  var delta = evt.originalEvent.wheelDelta / 12000;
+  groupScale += delta;
+  groupScale = Math.min(groupScale, 2.0);
+  groupScale = Math.max(groupScale, 0.2);
+
+  dagreGroup.attr({ scale: groupScale });
+});
+
 /*
   id:!start
   id:[rectangle]
@@ -107,7 +314,7 @@ scene.on('resolutionChange', _.debounce(function (evt) {
   id:<rhombus>
   id:/parallel/
  */
-dagreGroup.updateGraph('\ngraph TB\n  ; \u6CE8\u91CA\n  start:!start\n  update:[\u66F4\u65B0\u8BBE\u7F6E]\n  decision:<\u662F\u5426\u7F13\u5B58\uFF1F>\n  fresh:/\u66F4\u65B0\u7F13\u5B58/\n  finished:(\u7ED3\u675F)\n  ((A))\n  start->update{\u5F00\u59CB red}\n  update~~decision{A}\n  decision~>fresh{\u662F}\n  decision->finished{\u5426}\n  fresh->finished\n  A->C{"Y->" rgba(0,255,0,1) 22px}->fresh\n', {
+dagreGroup.updateGraph('\ngraph UR\n  ; \u6CE8\u91CA\n  ; start:!start\n  start:((S))\n  update:[\u66F4\u65B0\u8BBE\u7F6E]\n  decision:<\u662F\u5426\u7F13\u5B58\uFF1F>\n  fresh:/\u66F4\u65B0\u7F13\u5B58/\n  finished:(\u7ED3\u675F)\n  ; ((A))\n  start->update{\u5F00\u59CB red}\n  update~~decision\n  decision~>fresh{\u662F}\n  decision->finished{\u5426}\n  fresh->finished\n  ; A->C{"Y->" rgba(0,255,0,1) 22px}->fresh\n', {
   start: function start() {
     return new RoughCircle({
       id: 'start',

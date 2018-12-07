@@ -5,7 +5,7 @@ function parseNodes(nodes) {
   const rules = [];
 
   nodes.forEach((node) => {
-    const nodeExp = /^([^:]+):(.+)$/;
+    const nodeExp = /^([^:]+)\s*:\s*(.+)$/;
     let matched = node.match(nodeExp);
     let nodeData = null;
     const nodeRule = {};
@@ -115,7 +115,7 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
       this.setDefault({
         display: 'dagre',
         rankdir: 'TB', // TB, BT, LR, or RL
-        align: 'UL', // UL, UR, DL, or DR
+        align: 'UR', // UL, UR, DL, or DR
         nodesep: 120,
         edgesep: 30,
         ranksep: 120,
@@ -227,7 +227,7 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
           if(connection) {
             if(group.getElementById(connection[0]) && group.getElementById(connection[1])) {
               const label = item.attr('label');
-              item.id = item.id || `edge${idx}_`;
+              item.id = item.id || `edge${idx}_${Math.random().toString(36).slice(2)}`;
               const [width, height] = item.labelSize;
               const labelPos = item.attr('labelPos');
               const labelOffset = item.attr('labelOffset');
@@ -241,7 +241,7 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
           const [width, height] = item.offsetSize;
           item.attr('anchor', 0.5);
           const label = item.attr('label');
-          item.id = item.id || `node${idx}_`;
+          item.id = item.id || `node${idx}_${Math.random().toString(36).slice(2)}`;
           g.setNode(item.id, {label, width, height});
         }
       });
@@ -271,6 +271,8 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
           edge.attr('points', points.map(({x, y}) => [x, y]));
         }
       });
+
+      group.graph = g;
       group[_init] = true;
     },
   };
@@ -328,6 +330,10 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
       this.addEdges(edges);
     }
 
+    getEdge(v, w) {
+      return this.querySelector(`dagreedge[connection="[${v}, ${w}]"]`);
+    }
+
     addNodes(str, userNodes) {
       const nodes = parseNodes(str);
       if(nodes) {
@@ -354,7 +360,7 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
       const edges = parseEdges(str);
       if(edges) {
         edges.forEach((edge) => {
-          let edgeNode = this.querySelector(`dagreedge[connection="[${edge.connection}]"]`);
+          let edgeNode = this.getEdge(...edge.connection);
           if(!edgeNode) {
             edgeNode = new DagreEdge();
             this.append(edgeNode);
@@ -376,7 +382,7 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
           }
           if(lineStyle === 'dashed') {
             const lineWidth = edgeNode.attr('lineWidth');
-            edgeNode.attr({lineDash: [2 * lineWidth, 3 * lineWidth]});
+            edgeNode.attr({lineDash: [Math.max(5, 2 * lineWidth), Math.max(10, 3 * lineWidth)]});
           }
 
           const [node1, node2] = edge.connection;
