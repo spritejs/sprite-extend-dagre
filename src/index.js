@@ -1,11 +1,11 @@
 import Dagre from './dagre';
 import DagreNode from './node';
 import DagreEdge from './edge';
-import DagreRectangle from './rectangle';
-import DagreRoundedrect from './roundedrect';
-import DagreEllispe from './ellispe';
-import DagreRhombus from './rhombus';
-import DagreParallel from './parallel';
+import DagreRectangle from './nodes/rectangle';
+import DagreRoundedrect from './nodes/roundedrect';
+import DagreEllispe from './nodes/ellispe';
+import DagreRhombus from './nodes/rhombus';
+import DagreParallel from './nodes/parallel';
 
 export function install({use}) {
   return [

@@ -1,4 +1,4 @@
-import NodePlugin from './node';
+import NodePlugin from '../node';
 
 export default function install({__spritejs, use, utils, registerNodeType}) {
   const {DagreNode} = use(NodePlugin);

@@ -6,10 +6,21 @@ function parseNodes(nodes) {
 
   nodes.forEach((node) => {
     const nodeExp = /^([^:]+):(.+)$/;
-    const matched = node.match(nodeExp);
+    let matched = node.match(nodeExp);
+    let nodeData = null;
+    const nodeRule = {};
     if(matched) {
-      const nodeRule = {id: matched[1]};
-      const nodeData = matched[2];
+      nodeRule.id = matched[1];
+      nodeData = matched[2];
+    } else {
+      matched = node.match(/^[([<>\])]+([^([<>\])]+)[([<>\])]+$/);
+      if(matched) {
+        nodeRule.id = matched[1];
+        nodeData = node;
+      }
+    }
+
+    if(nodeData) {
       if(nodeData.indexOf('!') === 0) {
         nodeRule.type = nodeData.slice(1);
         nodeRule.userNode = true;
@@ -37,12 +48,25 @@ function parseNodes(nodes) {
   return rules;
 }
 
+function proceed(preToken, edge, edgeRule, edges) {
+  if(!preToken || edge.indexOf(preToken) === 0) {
+    edge = edge.replace(preToken, '');
+    if(/^--|~~|->|~>/.test(edge)) {
+      edges.push(edgeRule.connection[1] + edge);
+    }
+  } else {
+    throw new Error(`Parser proceed error: ${edge}`);
+  }
+}
+
 function parseEdges(edges) {
   if(typeof edges === 'string') edges = edges.split('\n').map(v => v.trim());
   const rules = [];
-  edges.forEach((edge) => {
+
+  for(let i = 0; i < edges.length; i++) {
+    let edge = edges[i];
     const edgeRule = {arrow: false, lineStyle: 'solid'};
-    const jointExp = /^([^\s~\->]+)(--|~~|->|~>)([^\s~\->]+)?/;
+    const jointExp = /^([^\s~\->{}]+)(--|~~|->|~>)([^\s~\->{}]+)/;
     let matched = edge.match(jointExp);
     if(matched) {
       edgeRule.connection = [matched[1], matched[3]];
@@ -55,27 +79,29 @@ function parseEdges(edges) {
         edgeRule.lineStyle = 'dashed';
       }
       edge = edge.replace(jointExp, '').trim();
-      if(edge) {
-        const labelTextExp = /^('[^']+'|"[^"]+"|[\S]+)/;
+
+      if(edge.indexOf('{') === 0) { // {...}
+        edge = edge.slice(1);
+        const labelTextExp = /^('[^']+'|"[^"]+"|[^\s~\->{}]+)/;
         matched = edge.match(labelTextExp);
         if(matched) {
           edgeRule.labelText = matched[1].replace(/^['"]|['"]$/g, '');
         }
         edge = edge.replace(labelTextExp, '').trim();
-        if(edge) {
-          const colorExp = /^(.+)?\s+([\d.]+(px|pt|pc|in|cm|mm|em|ex|rem|q|vw|vh|vmax|vmin|%)?$)/;
-          matched = edge.match(colorExp);
-          if(matched) {
-            edgeRule.labelColor = matched[1];
-            edgeRule.fontSize = matched[2];
-          } else {
-            edgeRule.labelColor = edge;
-          }
+        const colorExp = /^([^\s~\->{}]+)(?:\s+([\d.]+(px|pt|pc|in|cm|mm|em|ex|rem|q|vw|vh|vmax|vmin|%)?))?/;
+        matched = edge.match(colorExp);
+        if(matched) {
+          edgeRule.labelColor = matched[1];
+          if(matched[2]) edgeRule.fontSize = matched[2];
+          edge = edge.replace(colorExp, '').trim();
         }
+        proceed('}', edge, edgeRule, edges);
+      } else {
+        proceed('', edge, edgeRule, edges);
       }
       rules.push(edgeRule);
     }
-  });
+  }
   return rules;
 }
 
@@ -197,23 +223,19 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
       items.forEach((item, idx) => {
         const type = item.nodeType;
         if(type === 'dagreedge') {
-          if(item.autoUpdated_ === false) {
-            item.remove();
-          } else {
-            const connection = item.attr('connection');
-            if(connection) {
-              if(group.getElementById(connection[0]) && group.getElementById(connection[1])) {
-                const label = item.attr('label');
-                item.id = item.id || `edge${idx}_`;
-                const [width, height] = item.labelSize;
-                const labelPos = item.attr('labelPos');
-                const labelOffset = item.attr('labelOffset');
+          const connection = item.attr('connection');
+          if(connection) {
+            if(group.getElementById(connection[0]) && group.getElementById(connection[1])) {
+              const label = item.attr('label');
+              item.id = item.id || `edge${idx}_`;
+              const [width, height] = item.labelSize;
+              const labelPos = item.attr('labelPos');
+              const labelOffset = item.attr('labelOffset');
 
-                g.setEdge(...connection, {label, id: item.id, width, height, labelpos: labelPos[0].toLowerCase(), labeloffset: labelOffset});
-              }
-            } else {
-              throw new Error(`Edge:${item.id} no connection.`);
+              g.setEdge(...connection, {label, id: item.id, width, height, labelpos: labelPos[0].toLowerCase(), labeloffset: labelOffset});
             }
+          } else {
+            throw new Error(`Edge:${item.id} no connection.`);
           }
         } else {
           const [width, height] = item.offsetSize;
@@ -335,7 +357,6 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
           let edgeNode = this.querySelector(`dagreedge[connection="[${edge.connection}]"]`);
           if(!edgeNode) {
             edgeNode = new DagreEdge();
-            edgeNode.autoUpdated_ = true;
             this.append(edgeNode);
           }
           const {arrow, connection, fontSize, labelColor, labelText, lineStyle} = edge;
@@ -356,6 +377,20 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
           if(lineStyle === 'dashed') {
             const lineWidth = edgeNode.attr('lineWidth');
             edgeNode.attr({lineDash: [2 * lineWidth, 3 * lineWidth]});
+          }
+
+          const [node1, node2] = edge.connection;
+          if(!this.getElementById(node1)) {
+            const node = createNode('dagrerectangle');
+            node.id = node1;
+            node.label = node1;
+            this.append(node);
+          }
+          if(!this.getElementById(node2)) {
+            const node = createNode('dagrerectangle');
+            node.id = node2;
+            node.label = node2;
+            this.append(node);
           }
         });
       }

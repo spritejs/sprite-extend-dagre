@@ -66,8 +66,8 @@ export default function install({__spritejs, use, utils, registerNodeType}) {
             context.font = font;
             const {width: w} = context.measureText(label);
             context.restore();
-            if(width === '') width = w * 2;
-            if(height === '') height = h * 4;
+            if(height === '') height = h * 3.5;
+            if(width === '') width = Math.max(height, w * 2);
           }
         }
         if(width === '') width = 0;
