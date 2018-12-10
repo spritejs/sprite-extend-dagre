@@ -5,13 +5,13 @@ function parseNodes(nodes) {
   const rules = [];
 
   nodes.forEach((node) => {
-    const nodeExp = /^([^([<>/\])!:]+)\s*(.+)$/;
+    const nodeExp = /^([^([<>/\])!:]+)(\s*(.+))?$/;
     let matched = node.match(nodeExp);
     let nodeData = null;
     const nodeRule = {};
     if(matched) {
       nodeRule.id = matched[1];
-      nodeData = matched[2];
+      nodeData = matched[2] || `[${matched[1]}]`;
     } else {
       matched = node.match(/^[([<>/\])]+([^([<>/\])]+)[([<>/\])]+$/);
       if(matched) {

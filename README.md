@@ -6,6 +6,8 @@ Inspired by [MermaidJS](https://mermaidjs.github.io).
 
 ## Usage
 
+[CodePen](https://codepen.io/akira-cn/pen/ebYjYX)
+
 ```html
 <script src="https://unpkg.com/spritejs/dist/spritejs.min.js"></script>
 <script src="https://unpkg.com/sprite-extend-rough/dist/sprite-extend-rough.js"></script>
@@ -33,8 +35,39 @@ dagreGroup.layoutGraph(`
 </script>
 ```
 
-## Dagre
+![](https://p1.ssl.qhimg.com/t0121a97aee1b4b8929.jpg)
 
 ## Flow charts
 
-**Graph** declares a new graph and the direction of the graph layout.
+**Graph [direction]** declares a new graph and the direction of the graph layout.
+
+Possible directions are:
+
+- TB - top bottom (default)
+- BT - bottom top
+- RL - right left
+- LR - left right
+
+```js
+dagreGroup.layoutGraph(`
+  graph LR
+    A->B--C~>D
+`);
+```
+
+This declares a graph oriented from left to right.
+
+![](https://p3.ssl.qhimg.com/t01536d749b34f81c4e.jpg)
+
+## Nodes & Shapes
+
+### A node (default)
+
+```js
+dagreGroup.layoutGraph(`
+  graph LR
+    id
+`);
+```
+
+
