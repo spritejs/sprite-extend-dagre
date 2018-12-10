@@ -5,7 +5,7 @@ function parseNodes(nodes) {
   const rules = [];
 
   nodes.forEach((node) => {
-    const nodeExp = /^([^:]+)\s*:\s*(.+)$/;
+    const nodeExp = /^([^([<>/\])!:]+)\s*(.+)$/;
     let matched = node.match(nodeExp);
     let nodeData = null;
     const nodeRule = {};
@@ -13,7 +13,7 @@ function parseNodes(nodes) {
       nodeRule.id = matched[1];
       nodeData = matched[2];
     } else {
-      matched = node.match(/^[([<>\])]+([^([<>\])]+)[([<>\])]+$/);
+      matched = node.match(/^[([<>/\])]+([^([<>/\])]+)[([<>/\])]+$/);
       if(matched) {
         nodeRule.id = matched[1];
         nodeData = node;
@@ -106,7 +106,7 @@ function parseEdges(edges) {
 }
 
 export default function install({use, utils, registerNodeType, Group, BaseSprite, createNode}) {
-  const {attr, parseValue, parseColorString} = utils;
+  const {attr, parseValue} = utils;
   const {DagreEdge} = use(EdgePlugin);
 
   class DagreAttr extends Group.Attr {
@@ -120,7 +120,6 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
         edgesep: 30,
         ranksep: 120,
         clipOverflow: false,
-        labelBg: '',
         ranker: 'network-simplex',
         transition: 0,
         labelPos: 'center',
@@ -132,17 +131,6 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
     @attr
     set transition(val) {
       this.set('transition', val);
-    }
-
-    @parseValue(parseColorString)
-    @attr
-    set labelBg(val) {
-      this.set('labelBg', val);
-    }
-
-    get labelBg() {
-      const labelBg = this.get('labelBg') || this.get('bgcolor') || 'rgba(255,255,255,1)';
-      return labelBg;
     }
 
     @attr
@@ -305,7 +293,7 @@ export default function install({use, utils, registerNodeType, Group, BaseSprite
       }
     }
 
-    updateGraph(code, userNodes) {
+    layoutGraph(code, userNodes) {
       this[_init] = false;
       this.clear();
       const lines = code.split('\n').map(v => v.trim());

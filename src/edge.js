@@ -95,7 +95,11 @@ export default function install({__spritejs, use, utils, math, registerNodeType,
       if(this.label.trim() === '') {
         return 'rgba(0, 0, 0, 0)';
       }
-      return super.labelBg;
+      let labelBg = super.labelBg;
+      if(labelBg === '' && this.subject.parent) {
+        labelBg = this.subject.parent.attr('bgcolor') || 'rgba(255,255,255,1)';
+      }
+      return labelBg;
     }
 
     @attr

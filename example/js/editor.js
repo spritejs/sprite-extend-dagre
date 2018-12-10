@@ -147,7 +147,7 @@ controlGroup.children.forEach(function (s) {
 
 function removeNode(targetNode) {
   if (targetNode.id === 'start') {
-    dagreGroup.updateGraph('start:((S))');
+    dagreGroup.layoutGraph('start((S))');
   } else {
     if (targetNode.nodeType !== 'dagreedge') {
       var edges = dagreGroup.graph.nodeEdges(targetNode.id);
@@ -314,7 +314,7 @@ fglayer.on('mousewheel', function (evt) {
   id:<rhombus>
   id:/parallel/
  */
-dagreGroup.updateGraph('\ngraph UR\n  ; \u6CE8\u91CA\n  ; start:!start\n  start:((S))\n  update:[\u66F4\u65B0\u8BBE\u7F6E]\n  decision:<\u662F\u5426\u7F13\u5B58\uFF1F>\n  fresh:/\u66F4\u65B0\u7F13\u5B58/\n  finished:(\u7ED3\u675F)\n  ; ((A))\n  start->update{\u5F00\u59CB red}\n  update~~decision\n  decision~>fresh{\u662F}\n  decision->finished{\u5426}\n  fresh->finished\n  ; A->C{"Y->" rgba(0,255,0,1) 22px}->fresh\n', {
+dagreGroup.layoutGraph('\ngraph UR\n  ; \u6CE8\u91CA\n  ; start!start\n  start((S))\n  update[\u66F4\u65B0\u8BBE\u7F6E]\n  decision<\u662F\u5426\u7F13\u5B58\uFF1F>\n  fresh/\u66F4\u65B0\u7F13\u5B58/\n  finished(\u7ED3\u675F)\n  ; ((A))\n  start->update{\u5F00\u59CB red}\n  update~~decision\n  decision~>fresh{\u662F}\n  decision->finished{\u5426}\n  fresh->finished\n  ; A->C{"Y->" rgba(0,255,0,1) 22px}->fresh\n', {
   start: function start() {
     return new RoughCircle({
       id: 'start',

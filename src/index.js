@@ -7,6 +7,11 @@ import DagreEllispe from './nodes/ellispe';
 import DagreRhombus from './nodes/rhombus';
 import DagreParallel from './nodes/parallel';
 
+// auto use
+if(typeof window !== 'undefined' && window.spritejs) {
+  window.spritejs.use(install);
+}
+
 export function install({use}) {
   return [
     Dagre,

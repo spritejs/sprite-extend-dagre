@@ -1,11 +1,12 @@
 {
   "name": "sprite-extend-dagre",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "SpriteJS Renderer for Dagre.",
   "main": "src/index.js",
   "scripts": {
     "build": "babel src -d lib && webpack --env.production",
     "start": "babel example/src -d example/js --watch & webpack-dev-server --watch-poll",
+    "prepublishOnly": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "akira-cn",

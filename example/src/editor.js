@@ -133,7 +133,7 @@ controlGroup.children.forEach((s) => {
 
 function removeNode(targetNode) {
   if(targetNode.id === 'start') {
-    dagreGroup.updateGraph('start:((S))');
+    dagreGroup.layoutGraph('start((S))');
   } else {
     if(targetNode.nodeType !== 'dagreedge') {
       const edges = dagreGroup.graph.nodeEdges(targetNode.id);
@@ -275,15 +275,15 @@ fglayer.on('mousewheel', (evt) => {
   id:<rhombus>
   id:/parallel/
  */
-dagreGroup.updateGraph(`
+dagreGroup.layoutGraph(`
 graph UR
   ; 注释
-  ; start:!start
-  start:((S))
-  update:[更新设置]
-  decision:<是否缓存？>
-  fresh:/更新缓存/
-  finished:(结束)
+  ; start!start
+  start((S))
+  update[更新设置]
+  decision<是否缓存？>
+  fresh/更新缓存/
+  finished(结束)
   ; ((A))
   start->update{开始 red}
   update~~decision
