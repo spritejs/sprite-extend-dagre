@@ -70,4 +70,15 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
+![](https://p2.ssl.qhimg.com/t0146e72f3598e94457.jpg)
+
+### A node with text
+
+```js
+dagreGroup.layoutGraph(`
+  graph LR
+    id1[This is the text in the box]
+`);
+```
+
 

@@ -17,6 +17,12 @@ export default function install({__spritejs, use, utils, registerNodeType}) {
     }
 
     @attr
+    set label(val) {
+      super.label = val;
+      this.clearFlow();
+    }
+
+    @attr
     @inherit('rectangle')
     set shape(val) {
       this.set('shape', val);
@@ -67,7 +73,7 @@ export default function install({__spritejs, use, utils, registerNodeType}) {
             const {width: w} = context.measureText(label);
             context.restore();
             if(height === '') height = h * 3.5;
-            if(width === '') width = Math.max(height, w * 2);
+            if(width === '') width = Math.max(height, Math.min(w * 2, w + 120));
           }
         }
         if(width === '') width = 0;
