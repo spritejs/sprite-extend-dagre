@@ -1,4 +1,5 @@
 spritejs.use(spriteDagre);
+spritejs.use(spriteShapes);
 
 const {Scene, Dagre, RoughCircle, Group, Label,
   DagreRectangle, DagreRoundedrect, DagreEllipse, DagreRhombus, DagreParallel} = spritejs;
