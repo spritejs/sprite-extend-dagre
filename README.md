@@ -81,4 +81,13 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
+![](https://p3.ssl.qhimg.com/t01efd985c1b5182cde.jpg)
 
+### A node with round edges
+
+```js
+dagreGroup.layoutGraph(`
+  graph LR
+    id1(This is the text in the box)
+`);
+```

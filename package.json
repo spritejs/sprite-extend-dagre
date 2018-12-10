@@ -1,6 +1,6 @@
 {
   "name": "sprite-extend-dagre",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "SpriteJS Renderer for Dagre.",
   "main": "src/index.js",
   "scripts": {

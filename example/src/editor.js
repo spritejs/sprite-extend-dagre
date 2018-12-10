@@ -1,7 +1,7 @@
 spritejs.use(spriteDagre);
 
 const {Scene, Dagre, RoughCircle, Group, Label,
-  DagreRectangle, DagreRoundedrect, DagreEllispe, DagreRhombus, DagreParallel} = spritejs;
+  DagreRectangle, DagreRoundedrect, DagreEllipse, DagreRhombus, DagreParallel} = spritejs;
 
 const scene = new Scene('#container', {
   viewport: 'auto',
@@ -79,7 +79,7 @@ const state = new DagreRoundedrect({
 });
 controlGroup.append(state);
 
-const state2 = new DagreEllispe({
+const state2 = new DagreEllipse({
   anchor: 0.5,
   pos: [200, 1000],
   label: '内部状态',
@@ -271,7 +271,7 @@ fglayer.on('mousewheel', (evt) => {
   id:!start
   id:[rectangle]
   id:[(rounded)]
-  id:(ellispe)
+  id:(ellipse)
   id:<rhombus>
   id:/parallel/
  */

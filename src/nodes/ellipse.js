@@ -3,7 +3,7 @@ import NodePlugin from '../node';
 export default function install({__spritejs, use, utils, registerNodeType}) {
   const {DagreNode} = use(NodePlugin);
 
-  class DagreEllispe extends DagreNode {
+  class DagreEllipse extends DagreNode {
     drawShape(context, width, height) {
       if(context.context) {
         const generator = context.context.generator;
@@ -14,7 +14,7 @@ export default function install({__spritejs, use, utils, registerNodeType}) {
     }
   }
 
-  registerNodeType('dagreEllispe', DagreEllispe);
+  registerNodeType('dagreEllipse', DagreEllipse);
 
-  return {DagreEllispe};
+  return {DagreEllipse};
 }

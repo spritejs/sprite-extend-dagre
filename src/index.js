@@ -3,7 +3,7 @@ import DagreNode from './node';
 import DagreEdge from './edge';
 import DagreRectangle from './nodes/rectangle';
 import DagreRoundedrect from './nodes/roundedrect';
-import DagreEllispe from './nodes/ellispe';
+import DagreEllipse from './nodes/ellipse';
 import DagreRhombus from './nodes/rhombus';
 import DagreParallel from './nodes/parallel';
 
@@ -19,7 +19,7 @@ export function install({use}) {
     DagreEdge,
     DagreRectangle,
     DagreRoundedrect,
-    DagreEllispe,
+    DagreEllipse,
     DagreRhombus,
     DagreParallel,
   ].reduce((pkg, Node) => {

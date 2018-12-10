@@ -12,7 +12,7 @@ var _spritejs = spritejs,
     Label = _spritejs.Label,
     DagreRectangle = _spritejs.DagreRectangle,
     DagreRoundedrect = _spritejs.DagreRoundedrect,
-    DagreEllispe = _spritejs.DagreEllispe,
+    DagreEllipse = _spritejs.DagreEllipse,
     DagreRhombus = _spritejs.DagreRhombus,
     DagreParallel = _spritejs.DagreParallel;
 
@@ -93,7 +93,7 @@ var state = new DagreRoundedrect({
 });
 controlGroup.append(state);
 
-var state2 = new DagreEllispe({
+var state2 = new DagreEllipse({
   anchor: 0.5,
   pos: [200, 1000],
   label: '内部状态'
@@ -310,7 +310,7 @@ fglayer.on('mousewheel', function (evt) {
   id:!start
   id:[rectangle]
   id:[(rounded)]
-  id:(ellispe)
+  id:(ellipse)
   id:<rhombus>
   id:/parallel/
  */

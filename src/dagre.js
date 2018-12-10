@@ -25,7 +25,7 @@ function parseNodes(nodes) {
         nodeRule.type = nodeData.slice(1);
         nodeRule.userNode = true;
       } else if(/^\(\(.+\)\)$/.test(nodeData)) {
-        nodeRule.type = 'ellispe';
+        nodeRule.type = 'ellipse';
         nodeRule.label = nodeData.slice(2, -2);
       } else if(/^\(.+\)$/.test(nodeData)) {
         nodeRule.type = 'roundedrect';
