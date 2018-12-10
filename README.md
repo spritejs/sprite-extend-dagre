@@ -51,7 +51,8 @@ Possible directions are:
 ```js
 dagreGroup.layoutGraph(`
   graph LR
-    A->B--C~>D
+    A->B~~D
+    B~>C
 `);
 ```
 
