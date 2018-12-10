@@ -23,8 +23,9 @@ const scene = new Scene('#container', {
 
 const fglayer = scene.layer('fglayer');  
 const dagreGroup = new Dagre({
-  anchor: 0.5,
   pos: fglayer.center,
+  anchor: 0.5,
+  lineWidth: 5,
 });
 fglayer.append(dagreGroup);
 
