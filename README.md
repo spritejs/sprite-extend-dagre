@@ -36,7 +36,7 @@ dagreGroup.layoutGraph(`
 </script>
 ```
 
-![](https://p1.ssl.qhimg.com/t0121a97aee1b4b8929.jpg)
+<img src="https://p1.ssl.qhimg.com/t0121a97aee1b4b8929.jpg" width="400px">
 
 ## Flow charts
 
@@ -58,7 +58,7 @@ dagreGroup.layoutGraph(`
 
 This declares a graph oriented from left to right.
 
-![](https://p3.ssl.qhimg.com/t01536d749b34f81c4e.jpg)
+<img src="https://p3.ssl.qhimg.com/t01536d749b34f81c4e.jpg" width="400px">
 
 ### Nodes & Shapes
 
@@ -71,7 +71,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p2.ssl.qhimg.com/t0146e72f3598e94457.jpg)
+<img src="https://p2.ssl.qhimg.com/t0146e72f3598e94457.jpg" width="400px">
 
 #### A node with text
 
@@ -82,7 +82,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p3.ssl.qhimg.com/t01efd985c1b5182cde.jpg)
+<img src="https://p3.ssl.qhimg.com/t01efd985c1b5182cde.jpg" width="400px">
 
 #### A node with round edges
 
@@ -93,7 +93,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p1.ssl.qhimg.com/t01f6d90cab869c2bfd.jpg)
+<img src="https://p1.ssl.qhimg.com/t01f6d90cab869c2bfd.jpg" width="400px">
 
 #### A node in the form of an ellipse
 
@@ -104,7 +104,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p4.ssl.qhimg.com/t010d7369c05d30786b.jpg)
+<img src="https://p4.ssl.qhimg.com/t010d7369c05d30786b.jpg" width="400px">
 
 #### A node (rhombus)
 
@@ -115,7 +115,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p2.ssl.qhimg.com/t01a42a4bdf1e02a702.jpg)
+<img src="https://p2.ssl.qhimg.com/t01a42a4bdf1e02a702.jpg" width="400px">
 
 #### A node (parallelogram)
 
@@ -126,7 +126,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p1.ssl.qhimg.com/t018f6d7992b4657e0e.jpg)
+<img src="https://p1.ssl.qhimg.com/t018f6d7992b4657e0e.jpg" width="400px">
 
 #### A user defined node
 
@@ -148,7 +148,7 @@ dagreGroup.layoutGraph(`
 });
 ```
 
-![](https://p0.ssl.qhimg.com/t01db81939c05dc0a18.jpg)
+<img src="https://p0.ssl.qhimg.com/t01db81939c05dc0a18.jpg" width="400px">
 
 ### Links between nodes
 
@@ -161,7 +161,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p5.ssl.qhimg.com/t01c4bf673fec262557.jpg)
+<img src="https://p5.ssl.qhimg.com/t01c4bf673fec262557.jpg" width="400px">
 
 #### An open link
 
@@ -172,7 +172,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p3.ssl.qhimg.com/t01426f4dc668465bfc.jpg)
+<img src="https://p3.ssl.qhimg.com/t01426f4dc668465bfc.jpg" width="400px">
 
 #### A dashed link
 
@@ -183,7 +183,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p0.ssl.qhimg.com/t010c7071d05403af62.jpg)
+<img src="https://p0.ssl.qhimg.com/t010c7071d05403af62.jpg" width="400px">
 
 #### A dashed open link
 
@@ -194,7 +194,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p1.ssl.qhimg.com/t01f3c9315b1b418cfc.jpg)
+<img src="https://p1.ssl.qhimg.com/t01f3c9315b1b418cfc.jpg" width="400px">
 
 #### A link with text
 
@@ -205,7 +205,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p2.ssl.qhimg.com/t019761e7d42ea76eaf.jpg)
+<img src="https://p2.ssl.qhimg.com/t019761e7d42ea76eaf.jpg" width="400px">
 
 #### A link with colored text
 
@@ -216,7 +216,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p0.ssl.qhimg.com/t01f621d310cd55048c.jpg)
+<img src="https://p0.ssl.qhimg.com/t01f621d310cd55048c.jpg" width="400px">
 
 ### Demo
 
@@ -253,7 +253,7 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p3.ssl.qhimg.com/t01b0894a9cfbb7cdd8.jpg)
+<img src="https://p3.ssl.qhimg.com/t01b0894a9cfbb7cdd8.jpg" width="400px">
 
 ### Styling nodes & links
 
@@ -306,4 +306,4 @@ dagreGroup.layoutGraph(`
 `);
 ```
 
-![](https://p5.ssl.qhimg.com/t01846d1238f44ea7e7.jpg)
+<img src="https://p5.ssl.qhimg.com/t01846d1238f44ea7e7.jpg" width="400px">
