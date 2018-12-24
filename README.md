@@ -1,6 +1,6 @@
 # Sprite-Dagre
 
-Draws simple flow chart diagrams with spritejs. Powered by [Dagre](https://github.com/dagrejs/dagre). Inspired by [MermaidJS](https://mermaidjs.github.io).
+Draws simple flow chart diagrams with spritejs. Powered by [Dagre](https://github.com/dagrejs/dagre) and [Rough.js](https://github.com/pshihn/rough). Inspired by [MermaidJS](https://mermaidjs.github.io).
 
 ## Usage
 
