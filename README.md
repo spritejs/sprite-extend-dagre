@@ -2,6 +2,10 @@
 
 Draws simple flow chart diagrams with spritejs. Powered by [Dagre](https://github.com/dagrejs/dagre) and [Rough.js](https://github.com/pshihn/rough). Inspired by [MermaidJS](https://mermaidjs.github.io).
 
+## Demo
+
+[view](https://kakajun.github.io/sprite-extend-dagre/)
+
 ## Usage
 
 [CodePen](https://codepen.io/akira-cn/pen/ebYjYX)
@@ -11,23 +15,23 @@ Draws simple flow chart diagrams with spritejs. Powered by [Dagre](https://githu
 <script src="https://unpkg.com/sprite-extend-rough/dist/sprite-extend-rough.js"></script>
 <script src="https://unpkg.com/sprite-extend-dagre/dist/sprite-extend-dagre.js"></script>
 <script>
-const {Scene, Dagre} = spritejs;
+  const { Scene, Dagre } = spritejs;
 
-const scene = new Scene('#container', {
-  viewport: 'auto',
-  resolution: 'flex',
-  useDocumentCSS: true,
-});
+  const scene = new Scene("#container", {
+    viewport: "auto",
+    resolution: "flex",
+    useDocumentCSS: true,
+  });
 
-const fglayer = scene.layer('fglayer');  
-const dagreGroup = new Dagre({
-  pos: fglayer.center,
-  anchor: 0.5,
-  lineWidth: 5,
-});
-fglayer.append(dagreGroup);
+  const fglayer = scene.layer("fglayer");
+  const dagreGroup = new Dagre({
+    pos: fglayer.center,
+    anchor: 0.5,
+    lineWidth: 5,
+  });
+  fglayer.append(dagreGroup);
 
-dagreGroup.layoutGraph(`
+  dagreGroup.layoutGraph(`
   graph TB
     A->B~~D
     B~>C
@@ -131,21 +135,24 @@ dagreGroup.layoutGraph(`
 #### A user defined node
 
 ```js
-dagreGroup.layoutGraph(`
+dagreGroup.layoutGraph(
+  `
   graph LR
     id1!star
-`, {
-  star() {
-    const star = new Star();
-    star.attr({
-      radius: 100,
-      color: 'red',
-      angles: 5,
-      fillColor: 'red',
-    });
-    return star;
-  },
-});
+`,
+  {
+    star() {
+      const star = new Star();
+      star.attr({
+        radius: 100,
+        color: "red",
+        angles: 5,
+        fillColor: "red",
+      });
+      return star;
+    },
+  }
+);
 ```
 
 <img src="https://p0.ssl.qhimg.com/t01db81939c05dc0a18.jpg" width="400px">
@@ -223,15 +230,15 @@ dagreGroup.layoutGraph(`
 [CodePen](https://codepen.io/akira-cn/pen/QzWZdv)
 
 ```js
-const {Scene, Dagre} = spritejs;
+const { Scene, Dagre } = spritejs;
 
-const scene = new Scene('#container', {
-  viewport: 'auto',
-  resolution: 'flex',
+const scene = new Scene("#container", {
+  viewport: "auto",
+  resolution: "flex",
   useDocumentCSS: true,
 });
 
-const fglayer = scene.layer('fglayer');  
+const fglayer = scene.layer("fglayer");
 const dagreGroup = new Dagre({
   pos: fglayer.center,
   lineWidth: 5,
@@ -276,15 +283,15 @@ dagreedge[connection="[step1,step2]"] {
 ```
 
 ```js
-const {Scene, Dagre} = spritejs;
+const { Scene, Dagre } = spritejs;
 
-const scene = new Scene('#container', {
-  viewport: 'auto',
-  resolution: 'flex',
+const scene = new Scene("#container", {
+  viewport: "auto",
+  resolution: "flex",
   useDocumentCSS: true,
 });
 
-const fglayer = scene.layer('fglayer');  
+const fglayer = scene.layer("fglayer");
 const dagreGroup = new Dagre({
   pos: fglayer.center,
   lineWidth: 5,
