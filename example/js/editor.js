@@ -236,10 +236,13 @@ dagreGroup.on('appendChild', function (_ref) {
   child.on('dblclick', function (evt) {
     var label = child.attr('label');
 
-    var _child$attr = child.attr('labelXY'),
-        _child$attr2 = _slicedToArray(_child$attr, 2),
-        x = _child$attr2[0],
-        y = _child$attr2[1];
+    // var _child$attr = child.attr('labelXY'),
+    //     _child$attr2 = _slicedToArray(_child$attr, 2),
+    //     x = _child$attr2[0],
+    //     y = _child$attr2[1];
+        const arrs = child.xy;
+        let x = arrs[0];
+        let y = arrs[1];
 
     if (label) {
       if (x !== '' && y !== '') {
